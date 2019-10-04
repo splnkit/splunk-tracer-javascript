@@ -30,7 +30,7 @@ export default class ReportImp {
         });
         let jsonSpanRecords = [];
         _each(this._spanRecords, (spanRecord) => {
-            jsonSpanRecords.push(JSON.stringify(spanRecord._toJSON()));
+            jsonSpanRecords.push(spanRecord._toJSON());
         });
         return jsonSpanRecords;
     }

@@ -8,7 +8,7 @@ function FileTransport(filename) {
     this._requests = [];
 
     if (fs.existsSync(this._filename)) {
-        fs.unlink(this._filename);
+        fs.unlink(this._filename, function(){ console.log("Deleted");});
     }
 }
 
@@ -38,8 +38,8 @@ FileTransport.prototype.report = function(detached, auth, report, done) {
 
     this._requests.push({
         detached : detached,
-        auth : auth.toThrift(),
-        report : report.toThrift(),
+        // auth : auth.toThrift(),
+        report : report.toJSON(),
     });
 
     fs.writeFileSync(this._filename, JSON.stringify({

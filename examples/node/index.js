@@ -17,18 +17,14 @@
 //
 var splunktracing   = require('../..');
 
-var http        = require('http');
+var https        = require('https');
 var url         = require('url');
 var opentracing = require('opentracing');
-
-// Proxy the requests through a Splunk Forwarder server
-var PROXY_HOST = process.env.SPLUNK_PROXY_HOST || '127.0.0.1';
-var PROXY_PORT = process.env.SPLUNK_PROXY_PORT || 8088;
 
 //
 // The first argument to the script is the GitHub user name
 //
-var username = process.argv[2] || 'splunktracing';
+var username = process.argv[2] || 'splunk';
 
 // Initialize the OpenTracing APIs to use the Splunk Tracing bindings
 //
@@ -37,7 +33,7 @@ var username = process.argv[2] || 'splunktracing';
 // service or process.
 //
 opentracing.initGlobalTracer(new splunktracing.Tracer({
-    access_token   : '{your_access_token}',
+    access_token   : '08243c00-a31b-499d-9fae-776b41990997', //'{your_access_token}',
     component_name : 'splunk-tracer/examples/node',
 }));
 
@@ -129,7 +125,7 @@ function queryUserInfo(parentSpan, username, callback) {
     };
 
     // First query the user info for the given username
-    httpGet(parentSpan, 'http://api.github.com/users/' + username, function (err, json) {
+    httpGet(parentSpan, 'https://api.github.com/users/' + username, function (err, json) {
         if (err) {
             return next(err);
         }
@@ -180,15 +176,16 @@ function httpGet(parentSpan, urlString, callback) {
         opentracing.globalTracer().inject(span, opentracing.FORMAT_TEXT_MAP, carrier);
 
         var dest = url.parse(urlString);
+
         var options = {
-            host : PROXY_HOST,
+            host : dest.host,
             path : dest.path,
-            port : PROXY_PORT,
             headers: {
                 // User-Agent is required by the GitHub APIs
                 'User-Agent': 'Splunk Tracing Example',
             }
         };
+
         for (var key in carrier) {
             options.headers[key] = carrier[key];
         }
@@ -199,8 +196,8 @@ function httpGet(parentSpan, urlString, callback) {
             event : 'options',
             'options': options,
         });
-        return http.get(options, function(response) {
-            var bodyBuffer = '';
+        return https.get(options, function(response) {
+            let bodyBuffer = '';
             response.on('data', function(chunk) {
                 bodyBuffer += chunk;
             });

@@ -20,7 +20,7 @@ export const LOG_STRING_TO_LEVEL = {
 // The report interval for empty reports used to sample the clock skew
 export const CLOCK_STATE_REFRESH_INTERVAL_MS = 350;
 
-export const SPLUNK_APP_URL_PREFIX = 'https://app.lightstep.com';
+export const SPLUNK_APP_URL_PREFIX = 'https://app.splunk.com';
 
 export const JOIN_ID_PREFIX = 'join:';
 

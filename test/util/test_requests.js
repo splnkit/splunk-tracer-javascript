@@ -10,15 +10,16 @@ TestRequests.prototype.reportCount = function() {
 TestRequests.prototype.spanRecordCount = function () {
     var count = 0;
     _.each(this.requests, function(req) {
-        count += req.report.span_records.length;
+        count += req.report.length;
     });
     return count;
 };
 
 TestRequests.prototype.hasSpanRecord = function (opName) {
     return _.any(this.requests, function (req) {
-        return _.any(req.report.span_records, function (spanRec) {
-            return spanRec.span_name == opName;
+        return _.any(req.report, function (spanRec) {
+            let regex = RegExp(opName);
+            return regex.test(spanRec);
         });
     });
 };

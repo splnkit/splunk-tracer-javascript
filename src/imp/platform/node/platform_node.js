@@ -144,7 +144,7 @@ export default class PlatformNode {
             'tracer_platform_version' : process.version,
             'node_platform'           : process.platform,
             'node_arch'               : process.arch,
-            'hostname'                : os.hostname(),
+            'device'                : os.hostname(),
         };
         if (process.argv) {
             tags['command_line'] = process.argv.join(' ');

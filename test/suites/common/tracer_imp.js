@@ -25,7 +25,7 @@ describe("TracerImp", function() {
 
         it('should allow empty access_token', function() {
             expect(function() {
-                var t = new lightstep.Tracer({
+                var t = new splunktracing.Tracer({
                     component_name : 'no_token',
                     disable_reporting_loop : true,
                     silent : true,
@@ -88,7 +88,7 @@ describe("TracerImp", function() {
             ];
 
             for (var i = 0; i < testTable.length; i++) {
-                var tracer = new lightstep.Tracer({
+                var tracer = new splunktracing.Tracer({
                     access_token : '{your_access_token}',
                     component_name : '{node_test_suite}',
                     disable_reporting_loop : true,
@@ -103,16 +103,16 @@ describe("TracerImp", function() {
         });
 
         it('should default to an HTTPS port', function() {
-            expect(makeSPLTracer().options().collector_port).to.equal(443);
+            expect(makeSPLTracer().options().collector_port).to.equal(8088);
         });
 
         it('should default to correct ports when collector_encryption is set', function() {	
             expect(makeSPLTracer({	
                 collector_encryption : 'none',	
-            }).options().collector_port).to.equal(80);	
+            }).options().collector_port).to.equal(8088);	
             expect(makeSPLTracer({	
                 collector_encryption : 'tls',	
-            }).options().collector_port).to.equal(443);
+            }).options().collector_port).to.equal(8088);
         });
             
         it('should treat collector_port=0 as meaning "use the default"', function() {
@@ -122,12 +122,12 @@ describe("TracerImp", function() {
 
             expect(makeSPLTracer({
                 collector_port : 0,
-            }).options().collector_port).to.equal(443);
+            }).options().collector_port).to.equal(8088);
 
             expect(makeSPLTracer({
                 collector_port : 0,
                 collector_encryption : 'none',
-            }).options().collector_port).to.equal(80);
+            }).options().collector_port).to.equal(8088);
         });
 
         it('should default to an empty base path', function() {

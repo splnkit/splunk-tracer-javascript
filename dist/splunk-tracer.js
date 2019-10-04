@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["splunk-tracer"] = factory();
+		exports["splunktracing"] = factory();
 	else
-		root["splunk-tracer"] = factory();
+		root["splunktracing"] = factory();
 })(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -1680,7 +1680,7 @@ exports.default = Tracer;
 /*! exports provided: name, version, main, browser, engines, scripts, license, repository, dependencies, devDependencies, default */
 /***/ (function(module) {
 
-module.exports = {"name":"splunk-tracer","version":"0.22.0","main":"index.js","browser":"browser.js","engines":{"node":">=0.12.0"},"scripts":{"test":"rm -f test/results/*.json && node node_modules/mocha/bin/mocha -c test/unittest_node.js"},"license":"MIT","repository":{"type":"git","url":"http://github.com/splunk/splunk-tracer-javascript.git"},"dependencies":{"async":"1.5.0","eventemitter3":"1.1.1","hex2dec":"1.0.1","source-map-support":"0.3.3"},"devDependencies":{"babel-cli":"6.14.0","babel-core":"^6.26.3","babel-loader":"7","babel-plugin-add-module-exports":"^1.0.0","babel-plugin-check-es2015-constants":"6.7.2","babel-plugin-transform-es2015-arrow-functions":"6.5.2","babel-plugin-transform-es2015-block-scoped-functions":"6.6.5","babel-plugin-transform-es2015-block-scoping":"^6.26.0","babel-plugin-transform-es2015-classes":"6.6.5","babel-plugin-transform-es2015-computed-properties":"6.6.5","babel-plugin-transform-es2015-destructuring":"6.6.5","babel-plugin-transform-es2015-duplicate-keys":"6.6.4","babel-plugin-transform-es2015-literals":"6.5.0","babel-plugin-transform-es2015-modules-commonjs":"6.7.4","babel-plugin-transform-es2015-object-super":"6.6.5","babel-plugin-transform-es2015-parameters":"6.7.0","babel-plugin-transform-es2015-spread":"6.6.5","babel-plugin-transform-es2015-sticky-regex":"6.5.0","babel-plugin-transform-es2015-template-literals":"6.6.5","babel-plugin-transform-es2015-unicode-regex":"6.5.0","babel-polyfill":"6.3.14","babel-preset-es2015":"6.3.13","chai":"3.4.1","clone":"1.0.2","colors":"1.1.2","eslint":"2.4.0","eslint-config-airbnb":"6.2.0","eslint-plugin-react":"4.2.3","express":"^4.16.3","istanbul":"^0.4.5","mocha":"^5.2.0","opentracing":"0.14.3","shelljs":"0.5.3","sprintf-js":"1.0.3","underscore":"1.8.3","watch-trigger":"0.0.5","webpack":"^4.25.1","webpack-cli":"^3.1.2"}};
+module.exports = {"name":"splunk-tracer","version":"0.1.0","main":"index.js","browser":"browser.js","engines":{"node":">=0.12.0"},"scripts":{"test":"rm -f test/results/*.json && node node_modules/mocha/bin/mocha -c test/unittest_node.js"},"license":"MIT","repository":{"type":"git","url":"http://github.com/splunk/splunk-tracer-javascript.git"},"dependencies":{"async":"1.5.0","eventemitter3":"1.1.1","hex2dec":"1.0.1","source-map-support":"0.3.3"},"devDependencies":{"babel-cli":"6.14.0","babel-core":"^6.26.3","babel-loader":"7","babel-plugin-add-module-exports":"^1.0.0","babel-plugin-check-es2015-constants":"6.7.2","babel-plugin-transform-es2015-arrow-functions":"6.5.2","babel-plugin-transform-es2015-block-scoped-functions":"6.6.5","babel-plugin-transform-es2015-block-scoping":"^6.26.0","babel-plugin-transform-es2015-classes":"6.6.5","babel-plugin-transform-es2015-computed-properties":"6.6.5","babel-plugin-transform-es2015-destructuring":"6.6.5","babel-plugin-transform-es2015-duplicate-keys":"6.6.4","babel-plugin-transform-es2015-literals":"6.5.0","babel-plugin-transform-es2015-modules-commonjs":"6.7.4","babel-plugin-transform-es2015-object-super":"6.6.5","babel-plugin-transform-es2015-parameters":"6.7.0","babel-plugin-transform-es2015-spread":"6.6.5","babel-plugin-transform-es2015-sticky-regex":"6.5.0","babel-plugin-transform-es2015-template-literals":"6.6.5","babel-plugin-transform-es2015-unicode-regex":"6.5.0","babel-polyfill":"6.3.14","babel-preset-es2015":"6.3.13","chai":"3.4.1","clone":"1.0.2","colors":"1.1.2","eslint":"2.4.0","eslint-config-airbnb":"6.2.0","eslint-plugin-react":"4.2.3","express":"^4.16.3","istanbul":"^0.4.5","mocha":"^5.2.0","opentracing":"0.14.3","shelljs":"0.5.3","sprintf-js":"1.0.3","underscore":"1.8.3","watch-trigger":"0.0.5","webpack":"^4.25.1","webpack-cli":"^3.1.2"}};
 
 /***/ }),
 
@@ -1750,7 +1750,7 @@ var LOG_STRING_TO_LEVEL = exports.LOG_STRING_TO_LEVEL = {
 // The report interval for empty reports used to sample the clock skew
 var CLOCK_STATE_REFRESH_INTERVAL_MS = exports.CLOCK_STATE_REFRESH_INTERVAL_MS = 350;
 
-var SPLUNK_APP_URL_PREFIX = exports.SPLUNK_APP_URL_PREFIX = 'https://app.lightstep.com';
+var SPLUNK_APP_URL_PREFIX = exports.SPLUNK_APP_URL_PREFIX = 'https://app.splunk.com';
 
 var JOIN_ID_PREFIX = exports.JOIN_ID_PREFIX = 'join:';
 
@@ -2562,7 +2562,6 @@ var TransportBrowser = function () {
             // Note: the browser automatically sets 'Connection' and 'Content-Length'
             // and *does not* allow they to be set manually
             xhr.setRequestHeader('Accept', 'application/json');
-            xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader('Authorization', 'Splunk ' + this._access_token);
             xhr.onreadystatechange = function () {
                 if (this.readyState === 4) {
@@ -2574,7 +2573,7 @@ var TransportBrowser = function () {
                         err = new Error('unexpected empty response');
                     } else {
                         try {
-                            resp = proto.ReportResponse.deserializeBinary(this.response).toObject();
+                            resp = this.response;
                         } catch (exception) {
                             err = exception;
                         }
@@ -2582,7 +2581,7 @@ var TransportBrowser = function () {
                     return done(err, resp);
                 }
             };
-            var serialized = '\n'.join(reportJSON);
+            var serialized = reportJSON.join('\n');
             xhr.send(serialized);
         }
     }]);
@@ -2695,7 +2694,7 @@ var ReportImp = function () {
             });
             var jsonSpanRecords = [];
             (0, _each3.default)(this._spanRecords, function (spanRecord) {
-                jsonSpanRecords.push(JSON.stringify(spanRecord._toJSON()));
+                jsonSpanRecords.push(spanRecord._toJSON());
             });
             return jsonSpanRecords;
         }
@@ -3096,30 +3095,62 @@ var SpanImp = function (_opentracing$Span) {
             if (_util2.default.shouldSendMetaSpan(this._tracer().options(), this.getTags())) {
                 var _tags;
 
-                this._tracerImp.startSpan(constants.LS_META_SP_FINISH, {
+                this._tracerImp.startSpan(constants.SPL_META_SP_FINISH, {
                     tags: (_tags = {}, _defineProperty(_tags, constants.SPL_META_EVENT_KEY, true), _defineProperty(_tags, constants.SPL_META_TRACE_KEY, this.traceGUID()), _defineProperty(_tags, constants.SPL_META_SPAN_KEY, this.guid()), _tags)
                 }).finish();
             }
 
+            // console.log(this._log_records);
             this._tracerImp._addSpanRecord(this);
         }
     }, {
         key: '_toJSON',
         value: function _toJSON() {
+            var _this2 = this;
 
-            return { event: {
-                    span_guid: this.guid(),
-                    trace_guid: this.traceGUID(),
+            var obj_array = [];
+            var json_span = { event: {
+                    span_id: this.guid(),
+                    trace_id: this.traceGUID(),
+                    parent_span_id: this.parentGUID(),
                     runtime_guid: this._tracerImp.guid(),
-                    span_name: this._operationName,
-                    oldest_micros: this._beginMicros,
-                    youngest_micros: this._endMicros,
+                    baggage: this._ctx.baggage,
+                    component_name: this._tracerImp._options.component_name,
+                    operation_name: this._operationName,
+                    duration: this._endMicros - this._beginMicros,
+                    timestamp: this._beginMicros / 1000000,
                     tags: this._tags,
-                    error_flag: this._errorFlag,
-                    log_records: this._log_records
+                    error_flag: this._errorFlag
                 },
+                sourcetype: "splunktracing:span",
                 time: this._beginMicros / 1000000
             };
+            (0, _each3.default)(this._tracerImp._runtime._attributes, function (value, key) {
+                json_span.event[key] = value;
+            });
+            delete json_span.event.tags.parent_span_guid;
+            obj_array.push(JSON.stringify(json_span));
+            (0, _each3.default)(this._log_records, function (value, key) {
+                var json_log = { event: {
+                        fields: value._fields,
+                        timestamp: value._timestampMicros / 1000000
+                    },
+                    sourcetype: "splunktracing:log",
+                    time: value._timestampMicros / 1000000
+                };
+                (0, _each3.default)(json_span.event, function (value1, key1) {
+                    if (key1 != "timestamp" && key1 != "duration") {
+                        json_log.event[key1] = value1;
+                    }
+                });
+                try {
+                    obj_array.push(JSON.stringify(json_log));
+                } catch (err) {
+                    _this2._tracerImp._error('Span.log() contains circular data structure');
+                }
+            });
+            // console.log(obj_array);
+            return obj_array.join("\n");
         }
     }]);
 
@@ -3315,9 +3346,13 @@ var Tracer = function (_opentracing$Tracer) {
         if (opts) {
             _this.options(opts);
         }
-
-        _this._transport = new _platform_abstraction_layer.HTTPTransport(logger);
-        _this._info('Using protobuf over HTTP transport per user-defined option.');
+        if (typeof _this._transport === 'undefined' || _this._transport === null) {
+            switch (_this._options.transport) {
+                default:
+                    _this._transport = new _platform_abstraction_layer.HTTPTransport(logger);
+                    _this._info('Using JSON over HTTP transport per user-defined option.');
+            }
+        }
 
         // For clock skew adjustment.
         // Must be set after options have been set.
@@ -3387,7 +3422,7 @@ var Tracer = function (_opentracing$Tracer) {
             this.addOption('collector_encryption', { type: 'string', defaultValue: 'tls' });
             this.addOption('tags', { type: 'any', defaultValue: {} });
             this.addOption('max_reporting_interval_millis', { type: 'int', defaultValue: 2500 });
-            this.addOption('disable_clock_skew_correction', { type: 'bool', defaultValue: false });
+            this.addOption('disable_clock_skew_correction', { type: 'bool', defaultValue: true });
             this.addOption('transport', { type: 'string', defaultValue: 'proto' });
 
             // Non-standard, may be deprecated
@@ -3483,8 +3518,8 @@ var Tracer = function (_opentracing$Tracer) {
             if (util.shouldSendMetaSpan(this.options(), spanImp.getTags())) {
                 var _tags;
 
-                this.startSpan(constants.LS_META_SP_START, {
-                    tags: (_tags = {}, _defineProperty(_tags, constants.LS_META_EVENT_KEY, true), _defineProperty(_tags, constants.LS_META_TRACE_KEY, spanImp.traceGUID()), _defineProperty(_tags, constants.LS_META_SPAN_KEY, spanImp.guid()), _tags)
+                this.startSpan(constants.SPL_META_SP_START, {
+                    tags: (_tags = {}, _defineProperty(_tags, constants.SPL_META_EVENT_KEY, true), _defineProperty(_tags, constants.SPL_META_TRACE_KEY, spanImp.traceGUID()), _defineProperty(_tags, constants.SPL_META_SPAN_KEY, spanImp.guid()), _tags)
                 }).finish();
             }
             return spanImp;
@@ -3498,7 +3533,7 @@ var Tracer = function (_opentracing$Tracer) {
                     if (this.options().meta_event_reporting === true) {
                         var _tags2;
 
-                        this.startSpan(constants.LS_META_INJECT, {
+                        this.startSpan(constants.SPL_META_INJECT, {
                             tags: (_tags2 = {}, _defineProperty(_tags2, constants.SPL_META_EVENT_KEY, true), _defineProperty(_tags2, constants.SPL_META_TRACE_KEY, spanContext._traceGUID), _defineProperty(_tags2, constants.SPL_META_SPAN_KEY, spanContext._guid), _defineProperty(_tags2, constants.SPL_META_PROPAGATION_KEY, format), _tags2)
                         }).finish();
                     }
@@ -3545,8 +3580,8 @@ var Tracer = function (_opentracing$Tracer) {
                     if (this.options().meta_event_reporting === true) {
                         var _tags3;
 
-                        this.startSpan(constants.LS_META_EXTRACT, {
-                            tags: (_tags3 = {}, _defineProperty(_tags3, constants.LS_META_EVENT_KEY, true), _defineProperty(_tags3, constants.LS_META_TRACE_KEY, sc._traceGUID), _defineProperty(_tags3, constants.LS_META_SPAN_KEY, sc._guid), _defineProperty(_tags3, constants.LS_META_PROPAGATION_KEY, format), _tags3)
+                        this.startSpan(constants.SPL_META_EXTRACT, {
+                            tags: (_tags3 = {}, _defineProperty(_tags3, constants.SPL_META_EVENT_KEY, true), _defineProperty(_tags3, constants.SPL_META_TRACE_KEY, sc._traceGUID), _defineProperty(_tags3, constants.SPL_META_SPAN_KEY, sc._guid), _defineProperty(_tags3, constants.SPL_META_PROPAGATION_KEY, format), _tags3)
                         }).finish();
                     }
                     return sc;
@@ -4358,8 +4393,8 @@ var Tracer = function (_opentracing$Tracer) {
                 var _tags4;
 
                 this._first_report_has_run = true;
-                this.startSpan(constants.LS_META_TRACER_CREATE, {
-                    tags: (_tags4 = {}, _defineProperty(_tags4, constants.LS_META_EVENT_KEY, true), _defineProperty(_tags4, constants.LS_META_TRACER_GUID_KEY, this._runtimeGUID), _tags4)
+                this.startSpan(constants.SPL_META_TRACER_CREATE, {
+                    tags: (_tags4 = {}, _defineProperty(_tags4, constants.SPL_META_EVENT_KEY, true), _defineProperty(_tags4, constants.SPL_META_TRACER_GUID_KEY, this._runtimeGUID), _tags4)
                 }).finish();
             }
 

@@ -189,19 +189,48 @@ export default class SpanImp extends opentracing.Span {
     }
 
     _toJSON() {
-        // console.log(this.traceGUID());
-        return { event: {
-            span_guid       : this.guid(),
-            trace_guid      : this.traceGUID(),
+        var obj_array = []
+        var json_span = { event: {
+            span_id         : this.guid(),
+            trace_id        : this.traceGUID(),
+            parent_span_id  : this.parentGUID(),
             runtime_guid    : this._tracerImp.guid(),
-            span_name       : this._operationName,
-            oldest_micros   : this._beginMicros,
-            youngest_micros : this._endMicros,
+            baggage         : this._ctx.baggage,
+            component_name  : this._tracerImp._options.component_name,
+            operation_name  : this._operationName,
+            duration        : this._endMicros - this._beginMicros,
+            timestamp       : this._beginMicros / 1000000,
             tags            : this._tags,
             error_flag      : this._errorFlag,
-            log_records     : this._log_records,
         },
+        sourcetype: "splunktracing:span",
         time: this._beginMicros/1000000
         };
+        _each(this._tracerImp._runtime._attributes, (value, key) =>  {
+            json_span.event[key] = value
+        });
+        delete json_span.event.tags.parent_span_guid;
+        obj_array.push(JSON.stringify(json_span));
+        _each(this._log_records, (value, key) =>  {
+            var json_log = { event: {
+                    fields: value._fields,
+                    timestamp: value._timestampMicros / 1000000
+                   },
+               sourcetype: "splunktracing:log",
+               time: value._timestampMicros / 1000000
+            }
+            _each(json_span.event, (value1, key1) => {
+                if ( key1!="timestamp" && key1!="duration" ) {
+                    json_log.event[key1] = value1;
+                }
+            });
+            try {
+                obj_array.push(JSON.stringify(json_log));
+            } catch (err) {
+                this._tracerImp._error('Span.log() contains circular data structure');
+            }
+        });
+        // console.log(obj_array);
+        return obj_array.join("\n");
     }
 }

@@ -126,9 +126,13 @@ export default class Tracer extends opentracing.Tracer {
         if (opts) {
             this.options(opts);
         }
-
-        this._transport = new HTTPTransport(logger);
-        this._info('Using JSON over HTTP transport per user-defined option.');
+        if (typeof this._transport === 'undefined' || this._transport === null) {
+            switch (this._options.transport) {
+            default:
+                this._transport = new HTTPTransport(logger);
+                this._info('Using JSON over HTTP transport per user-defined option.');
+            }
+        }
 
         // For clock skew adjustment.
         // Must be set after options have been set.
