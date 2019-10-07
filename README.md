@@ -1,7 +1,5 @@
 # splunk-tracer
 
-[![npm version](https://badge.fury.io/js/splunk-tracer.svg)](https://badge.fury.io/js/splunk-tracer)
-[![Circle CI](https://circleci.com/gh/splunk/splunk-tracer-javascript.svg?style=shield)](https://circleci.com/gh/splunk/splunk-tracer-javascript)
 [![MIT license](http://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 
 Splunk distributed tracing library for Node.js and the browser.
@@ -31,8 +29,8 @@ opentracing.initGlobalTracer(new splunktracing.Tracer({
 The **[Splunk JavaScript Tracing Cookbook](doc/cookbook.md)** is a good next stop for information on how to quickly instrument your system.  If you want to try something out quickly in your browser code, see the **[browser quick start example](doc/cookbook.md#browser-quick-start)**.
 
 * For more information about using the OpenTracing API, see http://opentracing.io/
-* See [examples/browser](https://github.com/splunk/splunk-tracer-javascript/tree/master/examples/browser) for a complete JavaScript browser example
-* See [examples/node](https://github.com/splunk/splunk-tracer-javascript/tree/master/examples/node) for a complete Node.js server-side example
+* See [examples/browser](https://github.com/splnkit/splunk-tracer-javascript/tree/master/examples/browser) for a complete JavaScript browser example
+* See [examples/node](https://github.com/splnkit/splunk-tracer-javascript/tree/master/examples/node) for a complete Node.js server-side example
 
 The browser version of the code can be explicitly included using the following, which can be helpful in some [`browserify`](https://github.com/substack/node-browserify) (or similar) setups:
 
@@ -41,11 +39,11 @@ var splunktracing = require('splunk-tracer/browser');
 ```
 
 
-## splunk-specific API
+## Splunk-specific API
 
 The OpenTracing standard JavaScript API is [documented here](https://doc.esdoc.org/github.com/opentracing/opentracing-javascript/). The following describes splunk-specific options and methods.
 
-### splunk
+### Splunk
 
 ---
 
@@ -104,24 +102,19 @@ The OpenTracing standard JavaScript API is [documented here](https://doc.esdoc.o
 * `logger` `function(level: string, message: string, payload: any): void` *optional* - specify a custom logger function. Possible `level` values are `debug`, `info`, `warn` and `error`. By default messages will be logged to the console.
 * `disable_meta_event_reporting` `bool` *optional*, *default=false* - when `disable_meta_event_reporting` is set to `true`, the tracer will disable meta event reporting even if requested by the Satellite.
 
-### SpanImp
 
----
 
-#### generateTraceURL()
-
-Returns an absolute URL to the splunk application for the trace containing this span. It is safe to call this method after `finish()`.
-
-```js
-...
-span.finish();
-
-var url = span.generateTraceURL())
-console.log('View the trace for this span at:', url);
-```
+This library is the Splunk binding for [OpenTracing](http://opentracing.io/). See the [OpenTracing Javascript API](https://github.com/opentracing/opentracing-javascript) for additional detail.
 
 ## License
 
-[The MIT License](LICENSE).
+The Splunk Tracer for Javascript is licensed under the MIT License. Details can be found in the LICENSE file.
 
-Copyright (c) 2016, splunk
+### Third-party libraries
+
+This is a fork of the Javascript tracer from Lightstep, which is also licensed under the MIT License. Links to the original repository and license are below:
+
+* [lightstep-tracer-javascript][lightstep]: [MIT][lightstep-license]
+
+[lightstep]:                      https://github.com/lightstep/lightstep-tracer-javascript
+[lightstep-license]:              https://github.com/lightstep/lightstep-tracer-javascript/blob/master/LICENSE
