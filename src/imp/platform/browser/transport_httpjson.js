@@ -36,7 +36,7 @@ export default class TransportBrowser {
         // Note: the browser automatically sets 'Connection' and 'Content-Length'
         // and *does not* allow they to be set manually
         xhr.setRequestHeader('Accept', 'application/json');
-        xhr.setRequestHeader('Authorization', 'Splunk '+ this._access_token);
+        xhr.setRequestHeader('Authorization', 'Splunk ' + this._access_token);
         xhr.onreadystatechange = function () {
             if (this.readyState === 4) {
                 let err = null;

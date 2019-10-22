@@ -189,7 +189,7 @@ export default class SpanImp extends opentracing.Span {
     }
 
     _toJSON() {
-        var obj_array = []
+        var obj_array = [];
         var json_span = { event: {
             span_id         : this.guid(),
             trace_id        : this.traceGUID(),
@@ -203,24 +203,24 @@ export default class SpanImp extends opentracing.Span {
             tags            : this._tags,
             error_flag      : this._errorFlag,
         },
-        sourcetype: "splunktracing:span",
-        time: this._beginMicros/1000000
+        sourcetype: 'splunktracing:span',
+        time: this._beginMicros / 1000000
         };
-        _each(this._tracerImp._runtime._attributes, (value, key) =>  {
-            json_span.event[key] = value
+        _each(this._tracerImp._runtime._attributes, (value, key) => {
+            json_span.event[key] = value;
         });
         delete json_span.event.tags.parent_span_guid;
         obj_array.push(JSON.stringify(json_span));
-        _each(this._log_records, (value, key) =>  {
+        _each(this._log_records, (value, key) => {
             var json_log = { event: {
-                    fields: value._fields,
-                    timestamp: value._timestampMicros / 1000000
-                   },
-               sourcetype: "splunktracing:log",
+                fields: value._fields,
+                timestamp: value._timestampMicros / 1000000
+            },
+               sourcetype: 'splunktracing:log',
                time: value._timestampMicros / 1000000
-            }
+            };
             _each(json_span.event, (value1, key1) => {
-                if ( key1!="timestamp" && key1!="duration" ) {
+                if (key1!='timestamp' && key1 != "duration") {
                     json_log.event[key1] = value1;
                 }
             });
@@ -231,6 +231,6 @@ export default class SpanImp extends opentracing.Span {
             }
         });
         // console.log(obj_array);
-        return obj_array.join("\n");
+        return obj_array.join('\n');
     }
 }

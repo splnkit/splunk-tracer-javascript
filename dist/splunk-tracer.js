@@ -3122,7 +3122,7 @@ var SpanImp = function (_opentracing$Span) {
                     tags: this._tags,
                     error_flag: this._errorFlag
                 },
-                sourcetype: "splunktracing:span",
+                sourcetype: 'splunktracing:span',
                 time: this._beginMicros / 1000000
             };
             (0, _each3.default)(this._tracerImp._runtime._attributes, function (value, key) {
@@ -3135,11 +3135,11 @@ var SpanImp = function (_opentracing$Span) {
                         fields: value._fields,
                         timestamp: value._timestampMicros / 1000000
                     },
-                    sourcetype: "splunktracing:log",
+                    sourcetype: 'splunktracing:log',
                     time: value._timestampMicros / 1000000
                 };
                 (0, _each3.default)(json_span.event, function (value1, key1) {
-                    if (key1 != "timestamp" && key1 != "duration") {
+                    if (key1 != 'timestamp' && key1 != "duration") {
                         json_log.event[key1] = value1;
                     }
                 });
@@ -3150,7 +3150,7 @@ var SpanImp = function (_opentracing$Span) {
                 }
             });
             // console.log(obj_array);
-            return obj_array.join("\n");
+            return obj_array.join('\n');
         }
     }]);
 
