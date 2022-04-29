@@ -15,7 +15,7 @@
     "url": "http://github.com/splunk/splunk-tracer-javascript.git"
   },
   "dependencies": {
-    "async": "1.5.0",
+    "async": "2.6.4",
     "eventemitter3": "1.1.1",
     "hex2dec": "1.0.1",
     "source-map-support": "0.3.3"
